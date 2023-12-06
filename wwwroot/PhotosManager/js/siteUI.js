@@ -158,7 +158,7 @@ function updateHeader(texte, cmd) {
     </span>
     `);
 
-    $("#loginCmd").on('click', renderAbout);
+    //$("#loginCmd").on('click', renderAbout);
 }
 function renderAbout() {
     timeout();
