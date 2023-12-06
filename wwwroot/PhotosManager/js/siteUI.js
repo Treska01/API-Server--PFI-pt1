@@ -74,8 +74,8 @@ function updateHeader(texte, cmd) {
             <div class="dropdown-divider"></div>
             `);
 
-            if (cmd != "manageUser") {
-                $("#manageUserCmd").on('click', renderManageUser);
+            if (cmd != "manageUsers") {
+                $("#manageUserCmd").on('click', renderManageUsers);
             }
         }
 
@@ -166,23 +166,22 @@ function renderAbout() {
     eraseContent();
     updateHeader("À propos...", "about");
 
-    $("#content").append(
-        $(`
-            <div class="aboutContainer">
-                <h2>Gestionnaire de photos</h2>
-                <hr>
-                <p>
-                    Petite application de gestion de photos multiusagers à titre de démonstration
-                    d'interface utilisateur monopage réactive.
-                </p>
-                <p>
-                    Auteur: Nicolas Chourot
-                </p>
-                <p>
-                    Collège Lionel-Groulx, automne 2023
-                </p>
-            </div>
-        `))
+    $("#content").append(`
+        <div class="aboutContainer">
+            <h2>Gestionnaire de photos</h2>
+            <hr>
+            <p>
+                Petite application de gestion de photos multiusagers à titre de démonstration
+                d'interface utilisateur monopage réactive.
+            </p>
+            <p>
+                Auteur: Nicolas Chourot
+            </p>
+            <p>
+                Collège Lionel-Groulx, automne 2023
+            </p>
+        </div>
+    `);
 }
 function renderCreateProfil() {
     noTimeout(); // ne pas limiter le temps d’inactivité
@@ -409,4 +408,116 @@ function renderEditProfil() {
         showWaitingGif(); // afficher GIF d’attente
         modifyUserProfil(profil); // commander la modification au service API
     });
+}
+function renderManageUsers() {
+    timeout();
+    saveContentScrollPosition();
+    eraseContent();
+    updateHeader("Gestion des usagers", "manageUsers");
+
+    $("#content").append(`
+        <div class="UserRow">
+            <!--Users here-->
+        </div>
+    `);
+
+    let accounts = API.GetAccounts();
+
+    accounts.forEach(account => {
+        $(".UserRow").append(`
+            <div class="UserContainer">
+                <div class="UserLayout">
+                    <div class="UserAvatar"
+                        userid="${account.Id}"
+                        style="background-image:url('${account.Avatar}')"
+                        title="${account.Name}"></div>
+                    <div class="UserInfo">
+                        <div class="UserName">
+                            ${account.Name}
+                        </div>
+                        <div class="UserEmail">
+                            ${account.Email}
+                        </div>
+                    </div>
+                </div>
+                <div class="UserCommandPanel">
+                    <div class="UserCommandPanel">
+                        <!--Users here-->
+                    </div>
+                    <div class="UserCommandPanel">
+                        <!--Users here-->
+                    </div>
+                    <div class="UserCommandPanel">
+                        <!--Users here-->
+                    </div>
+                </div>
+            </div>
+        `);
+
+        if (account.Authorizations == { readAccess: 2, writeAccess: 2 }) {
+            $(".UserCommandPanel").append(`
+                <div class="fas fa-user-cog"
+                    title="Administrateur / retirer les droits administrateur"></div>
+                <div class="fa-regular fa-circle greenCmd"
+                    title="Usager non bloqué / bloquer l'accès"></div>
+            `);
+        } else {
+            $(".UserCommandPanel").append(`
+                <div class="fas fa-user-alt"
+                    title="Usager / promouvoir administrateur"></div>
+            `);
+
+            if (account.Authorizations.writeAccess == 1) {
+                $(".UserCommandPanel").append(`
+                    <div class="fa-regular fa-circle greenCmd"
+                    title="Usager non bloqué / bloquer l'accès"></div>
+                `);
+            } else {
+                $(".UserCommandPanel").append(`
+                    <div class="fa fa-ban redCmd"
+                    title="Usager bloqué / débloquer l'accès"></div>
+                `);
+            }
+        }
+
+        $(".UserCommandPanel").append(`
+            <div class="fas fa-user-slash goldenrodCmd"
+                title="Effacer l'usager"></div>
+        `);
+    });
+}
+function renderListPhotos() {
+    timeout();
+    saveContentScrollPosition();
+    eraseContent();
+    updateHeader("À propos...", "about");
+
+    $("#content").append(`
+        <div class="aboutContainer">
+            <h2>Gestionnaire de photos</h2>
+            <hr>
+            <p>
+                Petite application de gestion de photos multiusagers à titre de démonstration
+                d'interface utilisateur monopage réactive.
+            </p>
+            <p>
+                Auteur: Nicolas Chourot
+            </p>
+            <p>
+                Collège Lionel-Groulx, automne 2023
+            </p>
+        </div>
+    `);
+}
+function renderSortByDate() {
+
+}
+function renderSortByOwners() {
+
+}
+function renderSortByLikes() {
+
+}
+function renderOwnerOnly() {
+
 }
