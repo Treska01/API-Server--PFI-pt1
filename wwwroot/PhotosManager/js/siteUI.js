@@ -428,7 +428,7 @@ function renderManageUsers() {
             <div class="UserContainer">
                 <div class="UserLayout">
                     <div class="UserAvatar"
-                        userid="${account.Id}"
+                        data-userid="${account.Id}"
                         style="background-image:url('${account.Avatar}')"
                         title="${account.Name}"></div>
                     <div class="UserInfo">
@@ -480,9 +480,16 @@ function renderManageUsers() {
 
     $(".fa-user-cog").on('click', function() {
         // retirer les droits administrateur
+        // let user = accounts[Id=this.data("user-id")];
+        let user = accounts.find(x => x.id === this.data("user-id"));
+        user.Authorizations.readAccess = 1;
+        API.modifyUserProfil(user);
     });
     $(".fa-user-alt").on('click', function() {
         // promouvoir administrateur
+        let user = accounts.find(x => x.id === this.data("user-id"));
+        user.Authorizations = { readAccess: 2, writeAccess: 2 };
+        API.modifyUserProfil(user);
     });
     $(".fa-circle").on('click', function() {
         // bloquer l'accès
