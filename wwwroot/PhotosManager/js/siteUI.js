@@ -441,50 +441,59 @@ function renderManageUsers() {
                     </div>
                 </div>
                 <div class="UserCommandPanel">
-                    <div class="UserCommandPanel">
-                        <!--Users here-->
-                    </div>
-                    <div class="UserCommandPanel">
-                        <!--Users here-->
-                    </div>
-                    <div class="UserCommandPanel">
-                        <!--Users here-->
-                    </div>
+                    <!--User commands here-->
                 </div>
             </div>
         `);
 
         if (account.Authorizations == { readAccess: 2, writeAccess: 2 }) {
             $(".UserCommandPanel").append(`
-                <div class="fas fa-user-cog"
+                <div class="fas fa-user-cog" data-user-id="${account.Id}"
                     title="Administrateur / retirer les droits administrateur"></div>
-                <div class="fa-regular fa-circle greenCmd"
+                <div class="fa-regular fa-circle greenCmd" data-user-id="${account.Id}"
                     title="Usager non bloqué / bloquer l'accès"></div>
             `);
         } else {
             $(".UserCommandPanel").append(`
-                <div class="fas fa-user-alt"
+                <div class="fas fa-user-alt" data-user-id="${account.Id}"
                     title="Usager / promouvoir administrateur"></div>
             `);
 
             if (account.Authorizations.writeAccess == 1) {
                 $(".UserCommandPanel").append(`
-                    <div class="fa-regular fa-circle greenCmd"
+                    <div class="fa-regular fa-circle greenCmd" data-user-id="${account.Id}"
                     title="Usager non bloqué / bloquer l'accès"></div>
                 `);
             } else {
                 $(".UserCommandPanel").append(`
-                    <div class="fa fa-ban redCmd"
+                    <div class="fa fa-ban redCmd" data-user-id="${account.Id}"
                     title="Usager bloqué / débloquer l'accès"></div>
                 `);
             }
         }
 
         $(".UserCommandPanel").append(`
-            <div class="fas fa-user-slash goldenrodCmd"
+            <div class="fas fa-user-slash goldenrodCmd" data-user-id="${account.Id}"
                 title="Effacer l'usager"></div>
         `);
     });
+
+    $(".fa-user-cog").on('click', function() {
+        // retirer les droits administrateur
+    });
+    $(".fa-user-alt").on('click', function() {
+        // promouvoir administrateur
+    });
+    $(".fa-circle").on('click', function() {
+        // bloquer l'accès
+    });
+    $(".fa-ban").on('click', function() {
+        // débloquer l'accès
+    });
+    $(".fa-user-slash").on('click', function() {
+        // Effacer l'usager
+    });
+    // this.data("user-id");
 }
 function renderListPhotos() {
     timeout();
