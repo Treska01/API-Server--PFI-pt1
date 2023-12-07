@@ -29,6 +29,8 @@ function updateHeader(texte, cmd) {
         <span>&nbsp;</span> <!--filler-->
     </div>
     `);
+
+    $(".fa-plus").on("click", renderAjouterPhoto);
     
 
     if (loggedUser != null) {
@@ -566,34 +568,71 @@ function renderListPhotos() {
     timeout();
     saveContentScrollPosition();
     eraseContent();
-    updateHeader("À propos...", "about");
+    updateHeader("Liste des photos", "listPhotos");
 
     $("#content").append(`
         <div class="aboutContainer">
-            <h2>Gestionnaire de photos</h2>
-            <hr>
-            <p>
-                Petite application de gestion de photos multiusagers à titre de démonstration
-                d'interface utilisateur monopage réactive.
-            </p>
-            <p>
-                Auteur: Nicolas Chourot
-            </p>
-            <p>
-                Collège Lionel-Groulx, automne 2023
-            </p>
+            <h2>Aucunes photos pour l'instant</h2>
         </div>
     `);
 }
 function renderSortByDate() {
+    timeout();
+    saveContentScrollPosition();
+    eraseContent();
+    updateHeader("Liste des photos", "sortByDate");
 
+    $("#content").append(`
+        <div class="aboutContainer">
+            <h2>Aucunes photos pour l'instant</h2>
+        </div>
+    `);
 }
 function renderSortByOwners() {
+    timeout();
+    saveContentScrollPosition();
+    eraseContent();
+    updateHeader("Liste des photos", "sortByOwners");
 
+    $("#content").append(`
+        <div class="aboutContainer">
+            <h2>Aucunes photos pour l'instant</h2>
+        </div>
+    `);
 }
 function renderSortByLikes() {
+    timeout();
+    saveContentScrollPosition();
+    eraseContent();
+    updateHeader("Liste des photos", "sortByLikes");
 
+    $("#content").append(`
+        <div class="aboutContainer">
+            <h2>Aucunes photos pour l'instant</h2>
+        </div>
+    `);
 }
 function renderOwnerOnly() {
+    timeout();
+    saveContentScrollPosition();
+    eraseContent();
+    updateHeader("Liste des photos", "ownerOnly");
 
+    $("#content").append(`
+        <div class="aboutContainer">
+            <h2>Aucunes photos pour l'instant</h2>
+        </div>
+    `);
+}
+function renderAjouterPhoto() {
+    timeout();
+    saveContentScrollPosition();
+    eraseContent();
+    updateHeader("Ajout de photos", "newPhoto");
+
+    $("#content").append(`
+        <div class="aboutContainer">
+            <h2>Ajout de photos non disponible pour l'instant</h2>
+        </div>
+    `);
 }
