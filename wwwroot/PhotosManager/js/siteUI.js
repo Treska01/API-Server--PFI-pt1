@@ -23,17 +23,12 @@ function updateHeader(texte, cmd) {
         <img src="images/PhotoCloudLogo.png" class="appLogo">
     </span>
     <span class="viewTitle">${texte}
+    <div class="cmdIcon fa fa-plus" id="newPhotoCmd" title="Ajouter une photo"></div>
     </span>
     <div class="headerMenusContainer">
         <span>&nbsp;</span> <!--filler-->
     </div>
     `);
-
-    if (cmd == "listPhotos") {
-        $(".viewtitle").append(`
-        <div class="cmdIcon fa fa-plus" id="newPhotoCmd" title="Ajouter une photo"></div>
-        `);
-    }
     
 
     if (loggedUser != null) {
@@ -319,6 +314,7 @@ function renderEditProfil() {
     noTimeout(); // ne pas limiter le temps d’inactivité
     eraseContent(); // effacer le conteneur #content
     updateHeader("Profil", "editProfil"); // mettre à jour l’entête et menu
+    $("#newPhotoCmd").hide(); // camouffler l’icone de commande d’ajout de photo
     loggedUser = API.retrieveLoggedUser();
     $("#content").append(`
     <form class="form" id="editProfilForm"'>
@@ -392,11 +388,10 @@ function renderEditProfil() {
         <button class="form-control btn-secondary" id="abortCmd">Annuler</button>
     </div>
     <div class="cancel"> <hr>
-        <a href="confirmDeleteProfil.php">
-            <button class="form-control btn-warning">Effacer le compte</button>
-        </a>
+        <button class="form-control btn-warning" id="deleteCmd">Effacer le compte</button>
     </div>
     `);
+
     $('#createProfilCmd').on('click', renderCreateProfil); // call back sur clic
     initFormValidation();
     // call back la soumission du formulaire
@@ -408,12 +403,70 @@ function renderEditProfil() {
         showWaitingGif(); // afficher GIF d’attente
         modifyUserProfil(profil); // commander la modification au service API
     });
+
+    $("#deleteCmd").on("click", renderDeleteAccount);
+}
+function renderDeleteAccount(account = null) {
+    noTimeout(); // ne pas limiter le temps d’inactivité
+    eraseContent(); // effacer le conteneur #content
+    updateHeader("Retrait de compte", "deleteProfil"); // mettre à jour l’entête et menu
+    $("#newPhotoCmd").hide(); // camouffler l’icone de commande d’ajout de photo
+    
+    $("#content").append(`
+    <form class ="form UserdeleteForm">
+        <h3>Voulez-vous vraiment effacer votre compte?</h3>
+    </form>
+    `);
+
+    if (account != null) {
+        $("h3").text("Voulez-vous vraiment effacer cet usager et toutes ses photos?");
+        $(".UserdeleteForm").append(`
+        <div class="UserLayout">
+            <div class="UserAvatar"
+                data-userid="${account.Id}"
+                style="background-image:url('${account.Avatar}')"
+                title="${account.Name}"></div>
+            <div class="UserInfo">
+                <div class="UserName">
+                    ${account.Name}
+                </div>
+                <div class="UserEmail">
+                    ${account.Email}
+                </div>
+            </div>
+        </div>
+        `);
+    }
+
+    $(".UserdeleteForm").append(`
+    <div class="cancel">
+        <button class="form-control btn-danger" id="deleteCmd">Effacer</button>
+    </div>
+    <div class="cancel"> <hr>
+        <button class="form-control btn-secondary" id="abortCmd">Annuler</button>
+    </div>
+    `);
+
+    if (account == null) {
+        $("#deleteCmd").text("Effacer mon compte");
+        $("#deleteCmd").on("click", function () {
+            API.unsubscribeAccount(API.retrieveLoggedUser().Id);
+        });
+        $("#abortCmd").on("click", renderEditProfil);
+    } else {
+        $("#deleteCmd").on("click", function () {
+            API.unsubscribeAccount(account.Id);
+        });
+        $("#abortCmd").on("click", renderManageUsers);
+    }
 }
 function renderManageUsers() {
     timeout();
     saveContentScrollPosition();
     eraseContent();
     updateHeader("Gestion des usagers", "manageUsers");
+    $("#newPhotoCmd").hide(); // camouffler l’icone de commande d’ajout de photo
+    
 
     $("#content").append(`
         <div class="UserRow">
@@ -493,12 +546,19 @@ function renderManageUsers() {
     });
     $(".fa-circle").on('click', function() {
         // bloquer l'accès
+        let user = accounts.find(x => x.id === this.data("user-id"));
+        user.Authorizations = { readAccess: 1, writeAccess: 2 };
+        API.modifyUserProfil(user);
     });
     $(".fa-ban").on('click', function() {
         // débloquer l'accès
+        let user = accounts.find(x => x.id === this.data("user-id"));
+        user.Authorizations = { readAccess: 1, writeAccess: 1 };
+        API.modifyUserProfil(user);
     });
     $(".fa-user-slash").on('click', function() {
         // Effacer l'usager
+        renderDeleteAccount(accounts.find(x => x.id === this.data("user-id")));
     });
     // this.data("user-id");
 }
